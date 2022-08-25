@@ -1,0 +1,386 @@
+{
+	"info": {
+		"_postman_id": "b2c22daa-8e10-4dc4-b3d5-1e4e27450ad7",
+		"name": "QA_Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22805038"
+	},
+	"item": [
+		{
+			"name": "Logowanie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Logowanie\", function() {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"const json_responce = pm.response.json();",
+							"pm.collectionVariables.set(\"auth_token\", json_responce.token);",
+							"pm.test(\"Token is not NULL\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.value).to.not.null;",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/auth/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Dodaj książkę",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var auth_token = pm.collectionVariables.get(\"auth_token\");",
+							"pm.test(\"Jest zalogowany\", () =>{ pm.expect(auth_token).is.not.null;});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"const json_responce = pm.response.json();",
+							"pm.collectionVariables.set(\"bookid\", json_responce.id);",
+							"",
+							"pm.test(\"Book id is saved\", () => {",
+							"    var isSet = pm.collectionVariables.get(\"bookid\");",
+							"    pm.expect(isSet).is.not.null;",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "id",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"author\": \"Marzena Krotka\",\n    \"title\": \"Przybędzie\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edycja książki",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							" var bookid = pm.collectionVariables.get(\"bookid\");",
+							" console.log(bookid)",
+							" pm.test(\"Sprawdz czy id książki nie jest puste\", () => {pm.expect(bookid).is.not.null;});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"author\": \"Marcin Wróżek\",\n    \"title\": \"Daleko od domu\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/books/{{bookid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books",
+						"{{bookid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wypożyczenie książki",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test(\"Is non-admin logged?\", () =>{",
+							"    var user = pm.collectionVariables.get(\"login\");",
+							"    pm.expect(user).is.not.equal(\"admin\");",
+							"});",
+							"",
+							"pm.test(\"If admin logged-in, throw 403\", ()=>{",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/books/rent/{{bookid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books",
+						"rent",
+						"{{bookid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sprawdź wypożyczenia",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/books/rented-books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books",
+						"rented-books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Zwrot książki",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"If admin logged-in, throw 403\", ()=>{",
+							"    pm.response.to.have.status(403);",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.test(\"Is non-admin logged?\", () =>{",
+							"    var user = pm.collectionVariables.get(\"login\");",
+							"    pm.expect(user).is.not.equal(\"admin\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/books/return/{{bookid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books",
+						"return",
+						"{{bookid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usunięcie książki",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"    pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/books/{{bookid}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books",
+						"{{bookid}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{auth_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://0.0.0.0:8080",
+			"type": "string"
+		},
+		{
+			"key": "bookid",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "login",
+			"value": "admin",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "password",
+			"type": "string"
+		}
+	]
+}

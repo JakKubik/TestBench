@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test:newman": "newman run QA_Test.postman_collection.json"
+  },
+  "devDependencies": {
+    "newman": "^5.3.2"
+  }
+}
