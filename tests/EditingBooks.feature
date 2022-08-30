@@ -1,5 +1,5 @@
-Scenario: Editing books
-        Feature: Edition succeeds
+Feature: Editing books
+        Scenario: Edition succeeds
         Given: User is on Library page as Admin, 
         When: User clicks edit icon 
             And: when prompt window appears, 
@@ -8,7 +8,7 @@ Scenario: Editing books
             And: confirms with “OK”,
         Then: selected book position is correctly edited according to provided input.
 
-    Feature: Edition fails - author is empty
+    Scenario: Edition fails - author is empty
         Given: User is on Library page as Admin, 
         When: User clicks edit icon 
             And:  prompt window appears, 
@@ -18,7 +18,7 @@ Scenario: Editing books
         Then: User is notified about incorrect input data 
             And: selected book position is not edited.
 
-    Feature: Edition fails - title is empty
+    Scenario: Edition fails - title is empty
         Given: User is on Library page as Admin, 
         When: User clicks edit icon 
             And: when prompt window appears, 

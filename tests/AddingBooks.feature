@@ -1,5 +1,5 @@
-Scenario: Adding books
-    Feature: Creation successful
+Feature: Adding books
+    Scenario: Creation successful
         Given: User is on Library page as Admin,
             And: no same book already exists,
         When: User clicks “Add book” 
@@ -8,7 +8,7 @@ Scenario: Adding books
             And: confirms with “OK”,
         Then: new book appears in database as vacant position
 
-    Feature: Creation failed - empty book title
+    Scenario: Creation failed - empty book title
     Given: User is on Library page as Admin, 
     When: User clicks “Add book” 
         And: fills author field 
@@ -17,7 +17,7 @@ Scenario: Adding books
     Then: user is notified about incorrect input by highlighting title field as mandatory to be filled. 
         And: new position is not added.
 
-    Feature: Creation failed - empty book author
+    Scenario: Creation failed - empty book author
         Given: User is on Library page as Admin, 
         When: User clicks “Add book” 
             And: fills title field but leaves author empty 
@@ -25,7 +25,7 @@ Scenario: Adding books
         Then: user is notified about incorrect input, highlighting author field as mandatory to be filled. 
             And: New position is not added.
 
-    Feature: Creation failed - both fields not filled
+    Scenario: Creation failed - both fields not filled
         Given: User is on Library page as Admin, 
         When: User clicks “Add book”,
             And: user doesn't fill any of the fields 

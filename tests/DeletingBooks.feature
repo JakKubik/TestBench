@@ -1,12 +1,12 @@
-Scenario: Deleting books
-    Feature: Deletion succeeds 
+Feature: Deleting books
+    Scenario: Deletion succeeds 
         Given: User is on Library page as Admin, 
         When: User clicks trash can icon 
             And: prompt window appears 
             And: user confirms with “OK”,
         Then: book position is removed from list of positions.
 
-    Feature: Deletion is cancelled
+    Scenario: Deletion is cancelled
         Given: User is on Library page as Admin, 
         When: User clicks trash can icon 
             And: prompt window appears 
